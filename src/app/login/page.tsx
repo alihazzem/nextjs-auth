@@ -8,18 +8,14 @@ import { loginSchema, type LoginSchemaType } from "@/lib/zod/zodSchema";
 import { validate } from "@/lib/zod/zodValidate";
 
 export default function LoginPage() {
-    const [user, setUser] = useState<LoginSchemaType>({
-        email: "",
-        password: "",
-    });
+    const [user, setUser] = useState<LoginSchemaType>({ email: "", password: "" });
     const router = useRouter();
 
     const onLogin = async () => {
         const validation = validate(loginSchema, user);
 
         if (!validation.success) {
-            const errors = validation.errors
-
+            const errors = validation.errors;
             if (errors?.email) toast.error(errors?.email);
             if (errors?.password) toast.error(errors?.password);
             return;
@@ -48,53 +44,57 @@ export default function LoginPage() {
                     Login
                 </h1>
 
-                {/* Email */}
-                <div className="relative z-0 mb-5 group">
-                    <input
-                        type="email"
-                        id="email"
-                        value={user.email}
-                        required
-                        placeholder=" "
-                        autoComplete="email"
-                        className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        onChange={(e) => setUser({ ...user, email: e.target.value })}
-                    />
-                    <label
-                        htmlFor="email"
-                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
-                    >
-                        Email
-                    </label>
-                </div>
-
-                {/* Password */}
-                <div className="relative z-0 mb-6 group">
-                    <input
-                        type="password"
-                        id="password"
-                        value={user.password}
-                        required
-                        placeholder=" "
-                        className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        onChange={(e) => setUser({ ...user, password: e.target.value })}
-                    />
-                    <label
-                        htmlFor="password"
-                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
-                    >
-                        Password
-                    </label>
-                </div>
-
-                {/* Button */}
-                <button
-                    onClick={onLogin}
-                    type="button"
-                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        onLogin();
+                    }}
                 >
-                    Login
-                </button>
+                    {/* Email */}
+                    <div className="relative z-0 mb-5 group">
+                        <input
+                            type="text"
+                            id="email"
+                            value={user.email}
+                            placeholder=" "
+                            autoComplete="email"
+                            className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            onChange={(e) => setUser({ ...user, email: e.target.value })}
+                        />
+                        <label
+                            htmlFor="email"
+                            className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
+                        >
+                            Email
+                        </label>
+                    </div>
+
+                    {/* Password */}
+                    <div className="relative z-0 mb-6 group">
+                        <input
+                            type="password"
+                            id="password"
+                            value={user.password}
+                            placeholder=" "
+                            className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            onChange={(e) => setUser({ ...user, password: e.target.value })}
+                        />
+                        <label
+                            htmlFor="password"
+                            className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
+                        >
+                            Password
+                        </label>
+                    </div>
+
+                    {/* Button */}
+                    <button
+                        type="submit"
+                        className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl cursor-pointer"
+                    >
+                        Login
+                    </button>
+                </form>
 
                 {/* Footer */}
                 <p className="mt-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center">
@@ -109,4 +109,4 @@ export default function LoginPage() {
             </div>
         </div>
     );
-};
+}
