@@ -27,69 +27,76 @@ export default function LoginPage() {
     };
 
     useEffect(() => {
-        const allFieldsFilled = user.email.length > 0 && user.password.length > 0;
-        setButtonDisabled(!allFieldsFilled);
+        setButtonDisabled(!(user.email && user.password));
     }, [user]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-2 max-w-md mx-auto">
-            <h1 className="text-3xl font-bold dark:text-white mb-5 text-center">Login</h1>
+        <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 sm:p-8">
+                <h1 className="text-2xl sm:text-3xl font-bold dark:text-white mb-6 text-center">
+                    Login
+                </h1>
 
-            <div className="relative z-0 w-1/2 sm:w-1/3 md:w-1/4 mb-5 group">
-                <input
-                    type="email"
-                    id="email"
-                    value={user.email}
-                    placeholder=""
-                    required
-                    autoComplete="email"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    onChange={(e) => setUser({ ...user, email: e.target.value })}
-                />
-                <label
-                    htmlFor="email"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                {/* Email */}
+                <div className="relative z-0 mb-5 group">
+                    <input
+                        type="email"
+                        id="email"
+                        value={user.email}
+                        required
+                        placeholder=" "
+                        autoComplete="email"
+                        className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        onChange={(e) => setUser({ ...user, email: e.target.value })}
+                    />
+                    <label
+                        htmlFor="email"
+                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
+                    >
+                        Email
+                    </label>
+                </div>
+
+                {/* Password */}
+                <div className="relative z-0 mb-6 group">
+                    <input
+                        type="password"
+                        id="password"
+                        value={user.password}
+                        required
+                        placeholder=" "
+                        className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        onChange={(e) => setUser({ ...user, password: e.target.value })}
+                    />
+                    <label
+                        htmlFor="password"
+                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600"
+                    >
+                        Password
+                    </label>
+                </div>
+
+                {/* Button */}
+                <button
+                    onClick={onLogin}
+                    type="button"
+                    disabled={buttonDisabled}
+                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
-                    Email
-                </label>
+                    {buttonDisabled ? "Please fill all the fields" : "Login"}
+                </button>
+
+                {/* Footer */}
+                <p className="mt-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center">
+                    Don&apos;t have an account?{" "}
+                    <Link
+                        href="/signup"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                        Sign Up
+                    </Link>
+                </p>
             </div>
-
-            <div className="relative z-0 w-1/2 sm:w-1/3 md:w-1/4 mb-5 group">
-                <input
-                    type="password"
-                    id="password"
-                    value={user.password}
-                    placeholder=""
-                    required
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    onChange={(e) => setUser({ ...user, password: e.target.value })}
-                />
-                <label
-                    htmlFor="password"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                    Password
-                </label>
-            </div>
-
-            <button
-                onClick={onLogin}
-                type="button"
-                disabled={buttonDisabled}
-                className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-5 w-1/2 sm:w-1/3 md:w-1/4 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
-            >
-                {buttonDisabled ? "Please fill all the fields" : "Login"}
-            </button>
-
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-                Don&apos;t have an account?{" "}
-                <Link
-                    href="/signup"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                    Sign Up
-                </Link>
-            </p>
         </div>
     );
 };
