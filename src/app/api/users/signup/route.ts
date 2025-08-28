@@ -33,10 +33,10 @@ export async function POST(request: NextRequest) {
             user,
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Internal server error";
         return NextResponse.json(
-            { error: error.message },
+            { error: message },
             { status: 500 }
         );
     }
