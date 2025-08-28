@@ -1,34 +1,45 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { loginSchema, type LoginSchemaType } from "@/lib/zod/zodSchema";
+import { validate } from "@/lib/zod/zodValidate";
 
 export default function LoginPage() {
-    const [user, setUser] = useState({ email: "", password: "" });
-    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [user, setUser] = useState<LoginSchemaType>({
+        email: "",
+        password: "",
+    });
     const router = useRouter();
 
     const onLogin = async () => {
-        const response = await toast.promise(
-            axios.post("/api/users/login/", user),
-            {
-                loading: "Logging in...",
-                success: "User logged in successfully 🎉 Redirecting...",
-                error: (err) =>
-                    err.response?.data?.error || err.message || "Login failed",
-            }
-        );
+        const validation = validate(loginSchema, user);
 
-        setTimeout(() => {
+        if (!validation.success) {
+            const errors = validation.errors
+
+            if (errors?.email) toast.error(errors?.email);
+            if (errors?.password) toast.error(errors?.password);
+            return;
+        }
+
+        try {
+            const response = await toast.promise(
+                axios.post("/api/users/login/", user),
+                {
+                    loading: "Logging in...",
+                    success: "Logged in successfully 🎉 Redirecting...",
+                    error: (err) =>
+                        err.response?.data?.error || err.message || "Login failed",
+                }
+            );
             router.push(`/profile/${response.data.user.username}`);
-        }, 2000);
+        } catch (err) {
+            console.error(err);
+        }
     };
-
-    useEffect(() => {
-        setButtonDisabled(!(user.email && user.password));
-    }, [user]);
 
     return (
         <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
@@ -80,10 +91,9 @@ export default function LoginPage() {
                 <button
                     onClick={onLogin}
                     type="button"
-                    disabled={buttonDisabled}
-                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
                 >
-                    {buttonDisabled ? "Please fill all the fields" : "Login"}
+                    Login
                 </button>
 
                 {/* Footer */}

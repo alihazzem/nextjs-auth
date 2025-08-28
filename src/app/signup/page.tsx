@@ -1,31 +1,48 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { signupSchema, type SignupSchemaType } from "@/lib/zod/zodSchema";
+import { validate } from "@/lib/zod/zodValidate";
 
 export default function SignupPage() {
-    const [user, setUser] = useState({ username: "", email: "", password: "" });
-    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [user, setUser] = useState<SignupSchemaType>({
+        username: "",
+        email: "",
+        password: "",
+    });
+
     const router = useRouter();
 
     const onSignup = async () => {
-        await toast.promise(
-            axios.post("/api/users/signup/", user),
-            {
-                loading: "Creating your account...",
-                success: "Account created successfully 🎉 Redirecting...",
-                error: (err) =>
-                    err.response?.data?.error || err.message || "Signup failed",
-            }
-        );
-        router.push("/login");
-    };
+        const validation = validate(signupSchema, user);
 
-    useEffect(() => {
-        setButtonDisabled(!(user.username && user.email && user.password));
-    }, [user]);
+        if (!validation.success) {
+            const errors = validation.errors;
+
+            if (errors?.username) toast.error(errors?.username);
+            if (errors?.email) toast.error(errors?.email);
+            if (errors?.password) toast.error(errors?.password);
+
+            return;
+        }
+
+        try {
+            await toast.promise(
+                axios.post("/api/users/signup/", user),
+                {
+                    loading: "Creating your account...",
+                    success: "Account created successfully 🎉 Redirecting...",
+                    error: (err) => err.response?.data?.error || err.message || "Signup failed",
+                }
+            );
+            router.push("/login");
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
@@ -42,7 +59,7 @@ export default function SignupPage() {
                         value={user.username}
                         required
                         autoComplete="name"
-                        placeholder=" "  // keep placeholder=" " for floating labels
+                        placeholder=" "
                         className="block w-full py-2.5 px-0 text-sm sm:text-base text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                         onChange={(e) => setUser({ ...user, username: e.target.value })}
                     />
@@ -97,10 +114,9 @@ export default function SignupPage() {
                 <button
                     onClick={onSignup}
                     type="button"
-                    disabled={buttonDisabled}
-                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-blue cursor-pointer"
                 >
-                    {buttonDisabled ? "Please fill all fields" : "Sign Up"}
+                    Sign Up
                 </button>
 
                 {/* Footer */}
@@ -113,4 +129,4 @@ export default function SignupPage() {
             </div>
         </div>
     );
-};
+}

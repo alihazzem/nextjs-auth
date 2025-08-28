@@ -3,13 +3,30 @@ import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { loginSchema } from "@/lib/zod/zodSchema";
 
 connectToDB();
 
 export async function POST(request: NextRequest) {
     try {
         const reqBody = await request.json();
-        const { email, password } = reqBody;
+        const validation = loginSchema.safeParse(reqBody);
+        if (!validation.success) {
+            const errors: Record<string, string[]> = {};
+            validation.error.issues.forEach((issue) => {
+                const field = issue.path[0] as string;
+                if (!errors[field]) errors[field] = [];
+                errors[field].push(issue.message);
+            });
+
+            return NextResponse.json(
+                { errors },
+                { status: 400 }
+            );
+        }
+
+
+        const { email, password } = validation.data;
 
         const user = await User.findOne({ email });
         if (!user) {
