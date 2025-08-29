@@ -27,6 +27,7 @@ export default function ProfilePage() {
                 ).then((res) => setUser(res.data.user));
             } catch (err) {
                 router.push("/login");
+                console.error(err);
             }
         }
 
