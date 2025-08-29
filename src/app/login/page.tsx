@@ -1,15 +1,23 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { loginSchema, type LoginSchemaType } from "@/lib/zod/zodSchema";
 import { validate } from "@/lib/zod/zodValidate";
+import { checkAuthClient } from "@/lib/chechAuthClient";
 
 export default function LoginPage() {
     const [user, setUser] = useState<LoginSchemaType>({ email: "", password: "" });
     const router = useRouter();
+
+    useEffect(() => {
+        async function verifyAuth() {
+            if (await checkAuthClient()) router.push("/profile");
+        }
+        verifyAuth();
+    }, [router]);
 
     const onLogin = async () => {
         const validation = validate(loginSchema, user);

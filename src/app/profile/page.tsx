@@ -59,7 +59,6 @@ export default function ProfilePage() {
                 <h1 className="text-3xl font-bold mb-2">
                     Welcome, <span className="text-blue-600 dark:text-blue-400">{user.username}</span> 🎉
                 </h1>
-                {user.email && <p className="text-gray-600 dark:text-gray-300 mb-6">{user.email}</p>}
                 <p className="text-gray-500 dark:text-gray-400 mb-6">
                     Here you can manage your account and settings.
                 </p>
