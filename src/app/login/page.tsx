@@ -22,7 +22,7 @@ export default function LoginPage() {
         }
 
         try {
-            const response = await toast.promise(
+            await toast.promise(
                 axios.post("/api/users/login/", user),
                 {
                     loading: "Logging in...",
@@ -31,9 +31,10 @@ export default function LoginPage() {
                         err.response?.data?.error || err.message || "Login failed",
                 }
             );
-            router.push(`/profile/${response.data.user.username}`);
-        } catch (err) {
-            console.error(err);
+            router.push("/profile");
+        } catch (error) {
+            console.error(error);
+            toast.error("Login failed");
         }
     };
 

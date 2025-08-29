@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
             email: user.email,
         };
 
-        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+        const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
             expiresIn: "1d",
         });
 
@@ -62,6 +62,10 @@ export async function POST(request: NextRequest) {
 
         response.cookies.set("token", token, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+
         });
 
         return response;
