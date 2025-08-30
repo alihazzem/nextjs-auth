@@ -1,7 +1,6 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -13,8 +12,14 @@ type UserType = {
 export default function ProfilePage() {
     const [user, setUser] = useState<UserType | null>(null);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
+        const message = searchParams.get("message");
+        if (message === "already-logged-in") {
+            toast.success("You are already logged in!");
+        }
+
         async function fetchUser() {
             try {
                 await toast.promise(
@@ -32,7 +37,7 @@ export default function ProfilePage() {
         }
 
         fetchUser();
-    }, [router]);
+    }, [router, searchParams]);
 
     const handleLogout = async () => {
         try {

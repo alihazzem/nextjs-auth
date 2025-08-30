@@ -1,12 +1,11 @@
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { signupSchema, type SignupSchemaType } from "@/lib/zod/zodSchema";
 import { validate } from "@/lib/zod/zodValidate";
-import { checkAuthClient } from "@/lib/chechAuthClient";
 
 export default function SignupPage() {
     const [user, setUser] = useState<SignupSchemaType>({
@@ -15,13 +14,6 @@ export default function SignupPage() {
         password: "",
     });
     const router = useRouter();
-
-    useEffect(() => {
-        async function verifyAuth() {
-            if (await checkAuthClient()) router.push("/profile");
-        }
-        verifyAuth();
-    }, [router]);
 
     const onSignup = async () => {
         const validation = validate(signupSchema, user);
