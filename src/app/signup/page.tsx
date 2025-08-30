@@ -32,7 +32,7 @@ export default function SignupPage() {
                 {
                     loading: "Creating your account...",
                     success: "Account created successfully 🎉 Redirecting...",
-                    error: (err) => err.response?.data?.error || err.message || "Signup failed",
+                    error: (err) => err.response?.data?.message || err.message || "Signup failed",
                 }
             );
             router.push("/login");

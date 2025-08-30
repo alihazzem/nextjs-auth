@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
             { $or: [{ username }, { email }] });
         if (userExists) {
             return NextResponse.json(
-                { errors: "User already exists" },
+                { message: "User already exists" },
                 { status: 400 }
             );
         }
